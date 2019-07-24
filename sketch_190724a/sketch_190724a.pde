@@ -1,12 +1,13 @@
 int gameState;
 int playerX = 200;
 int playerY = 420;
-int playerWidth = 40;
+int playerWidth = 75;
 int playerHeight = 20;
 boolean isHitted;
 
-int blockWidth = 78;
+int blockWidth = 75;
 int blockHeigtht = 30;
+int[] blockState = new int[25];
 
 float ballX;
 float ballY;
@@ -38,9 +39,12 @@ void gameInit(){
     gameState = 0;
     ballX = 100;
     ballY = 250;
-    ballSpdX = 4;
-    ballSpdY = 4;
+    ballSpdX = 3;
+    ballSpdY = 3;
     isHitted = false;
+    for (int i=0; i< 25; i++){
+        blockState[i] = 1;
+    }
 }
 void gameTitle(){
     for(int i=0; i<100; i+=10){
@@ -77,8 +81,8 @@ void playerDisp(){
 
 void ballDisp(){
     imageMode(CENTER);
-    // fill(0,0,100);
-    fill(0,100,100);
+    fill(0,0,100);
+    // fill(0,100,100);
 
     rect(ballX, ballY, ballWidth, ballHeight);
     imageMode(CORNER);
@@ -108,7 +112,38 @@ void ballMove(){
     }
 }
 
-void blockDisp{
-    int xx, yy;
+void blockDisp(){
+    int blockX, blockY;
+    for(int i=0; i<25; i++){
+        if(blockState[i] == 1){
+            fill(( i / 5 ) * 15, 100, 100);
+            blockX = (i % 5) * (blockWidth + 5);
+            blockY = 50 + (i / 5) * (blockHeigtht + 3);
+            blockHitCheck(i, blockX, blockY);
+            if(blockState[i] == 1){
+            rect(blockX, blockY, blockWidth, blockHeigtht, 5);
+            }
+        }
+    }
+}
+
+void blockHitCheck(int blockNum, int blockX, int blockY){
+    // !(ブロックと接触(ブロックの内側って意味ですね))
+    if( !((blockX < ballX) && (blockX + ballWidth > ballX) && (blockY < ballY) && (blockY + ballHeight > ballY)) ){
+            return;
+    }
+    blockState[blockNum] = 0;
+
+    if ((blockX < ballX) && (blockX + ballX > ballX)) {
+        ballSpdY = -ballSpdY;
+        return;
+    }
+
+    if ((blockY < ballY) && (blockY + blockHeigtht > ballY)){
+        ballSpdX = -ballSpdX;
+        return;
+    }
+    ballSpdX = -ballSpdX;
+    ballSpdY = -ballSpdY;
 
 }
