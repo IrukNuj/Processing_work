@@ -20,7 +20,7 @@ void setup() {
   board.initGame();
   ai = new Ai(board, aiStone);
   ui = new Ui();
-  gameOver();
+  //gameOver();
 
 }
 
@@ -140,7 +140,7 @@ void turnForAi() {
 }
 
 void gameOver() {
-  fill(0,0,0);
+  board.initGame();
   String message;
   int score = board.calcScore();
   if( board.winner() == myStone ){
@@ -151,6 +151,7 @@ void gameOver() {
     // 引き分けもありえる
     message = "Draw!";
   }
+  rect(200, 250, 240, 180);
   ui.showResultMessage(message, score);
   noLoop();
 }

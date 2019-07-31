@@ -36,9 +36,9 @@ class Ui {
     textSize(40);
     fill(0);
     String resultMessage;
-    resultMessage = String.format("%s - %s", 32+score, 32-score);
-    text(message, 160 , 320);
-    text(resultMessage, 160 , 360);
+    resultMessage = String.format("%s - %s", 32+score/2, 32-score/2);
+    text(message, 240 , 320);
+    text(resultMessage, 240 , 400);
 
   }
 
