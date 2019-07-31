@@ -1,53 +1,41 @@
+/**
+* 盤面クラス
+* マスを2x2の行列としてもっている
+*/
 class Board {
-  ArrayList<ArrayList> cells; // マスの行を入れておく配列
+  int cellSize = 80;
+  ArrayList<ArrayList> cells = new ArrayList();
 
   Board() {
-    cells = new ArrayList<ArrayList>();
-
-    for(int row = 0; row < 8; row++){
-      // 行ごとの配列を作る
-      ArrayList<Cell> rCells = new ArrayList<Cell>();
-
-      for(int col = 0; col < 8; col++){
-        // マスを作って行の配列に入れる
-        Cell cell = new Cell(col, row);
-        rCells.add(cell);
+    for(int i=0;i < 8; i++){
+      ArrayList<Cell> row = new ArrayList();
+      for(int j=0;j < 8; j++){
+        //rect(i * cellSize,j * cellSize, cellSize,cellSize);
+        row.add(new Cell(j,i ));
       }
-
-      // 行の配列を全体の配列に入れる
-      cells.add(rCells);
+      cells.add(row);       //<>//
     }
   }
 
   void initGame() {
-    getCellAt(3,3).putStone( 1 );
-    getCellAt(4,4).putStone( 1 );
-    getCellAt(3,4).putStone( -1 );
-    getCellAt(4,3).putStone( -1 );
+   getCellAt(3,3).putStone( Cell.BLACK);
+   getCellAt(4,4).putStone( Cell.BLACK);
+   getCellAt(3,4).putStone( Cell.WHITE);
+   getCellAt(4,3).putStone( Cell.WHITE);
   }
 
-  /**
-  * 盤面の「描く」機能
-  * マスを一個一個とりだして描画させている
-  */
-  void display() {
-    // マスを一個一個とりだしてマスの「描画する」機能を実行する
-    for(ArrayList<Cell> row: cells){
-      for(Cell c: row){
-        c.display();
-      }
-    }
+  Cell getCellAtGeometry(int x, int y) {
+    int numCol = floor( x / cellSize);
+    int numRow = floor( y / cellSize);
+    return this.getCellAt(numCol, numRow);
   }
 
-  /**
-  * ある座標にあるマスを返す
-  */
-  Cell getCellAtXY(int x,int y) {
-    int colNum = floor( x / 50);
-    int rowNum = floor( y / 50);
-    return (Cell) cells.get(rowNum).get(colNum);
+  Cell getCellAt(int col, int row) {
+    if(col < 0 || col > 7 || row < 0 || row > 7){
+      return null;
+     }
+     return (Cell)cells.get(row).get(col);
   }
-
 
   /**
   * あるマスに石を置いた場合にひっくりかえせるセルの配列を返す
@@ -99,8 +87,8 @@ class Board {
     if(directionCol == 0 && directionRow == 0){
       return cellsToReturn;
     }
-    int col = cellAtStart.col + directionCol;
-    int row = cellAtStart.row + directionRow;
+    int col = cellAtStart.getCol() + directionCol;
+    int row = cellAtStart.getRow() + directionRow;
     Cell nextCell = getCellAt(col,row);
     while(nextCell != null){
       cellsToReturn.add(nextCell);
@@ -111,22 +99,46 @@ class Board {
     return cellsToReturn;
   }
 
-  Cell getCellAt(int col, int row) {
-    if(col < 0 || col > 7 || row < 0 || row > 7){
-      return null;
+  void display() {
+    for(ArrayList row: cells){
+      for(Object c: row){
+        Cell cell = (Cell) c;
+        cell.display();
+      }
     }
-    return (Cell) cells.get(row).get(col);
   }
 
-  ArrayList<Cell> getEmptyCells() {
-    ArrayList<Cell> eCells = new ArrayList<Cell>();
+  ArrayList<Cell> getAvailableCells() {
+    ArrayList<Cell> aCells = new ArrayList<Cell>();
     for(ArrayList<Cell> row: cells){
       for(Cell cell: row){
         if(!cell.hasStone()){
-          eCells.add(cell);
+          aCells.add(cell);
         }
       }
     }
-    return eCells;
+    return aCells;
+  }
+
+  int calcScore() {
+    int score = 0;
+    for(ArrayList row: cells) {
+      for(Object c: row) {
+        Cell cell = (Cell)c;
+        score += cell.getScore();
+      }
+    }
+    return score;
+  }
+
+  int winner() {
+    int score = this.calcScore();
+    if( score > 0 ){
+      return Cell.BLACK;
+    } else if( score < 0 ) {
+      return Cell.WHITE;
+    } else {
+      return 0;
+    }
   }
 }

@@ -1,10 +1,13 @@
-class Ai{
+/**
+* AIクラス
+*/
+class Ai {
   Board board;
-  int stoneColor;
+  int stone;
 
-  Ai(Board board) {
+  Ai(Board board, int stone) {
     this.board = board;
-    this.stoneColor = -1; // 白
+    this.stone = stone;
   }
 
   /**
@@ -15,15 +18,15 @@ class Ai{
   */
   Cell think() {
     int max = 0;
-    Cell bestCell = null;
-    ArrayList<Cell> candidates = board.getEmptyCells(); // 空のマスの配列(※まだ作ってません)
+    Cell cellToPut = null;
+    ArrayList<Cell> candidates = board.getAvailableCells();
     for(Cell cell: candidates) {
-      ArrayList<Cell> cellsToFlip = board.cellsToFlipWith(cell,  stoneColor);
+      ArrayList<Cell> cellsToFlip = board.cellsToFlipWith(cell, Cell.WHITE);
       if(max < cellsToFlip.size()){
         max = cellsToFlip.size();
-        bestCell = cell;
+        cellToPut = cell;
       }
     }
-    return bestCell;
+    return cellToPut;
   }
 }
